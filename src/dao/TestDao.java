@@ -9,8 +9,7 @@ public class TestDao {
 	public static void main(String[] args) {
 		
 		SerieDaoImpl sdao= new SerieDaoImpl();
-		
-		Serie srod= sdao.save(new Serie("My Demon",1));
+		Serie srod= sdao.save(new Serie("My Demon"));
 		
 		System.out.println(srod);
 		

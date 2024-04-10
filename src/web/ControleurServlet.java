@@ -10,17 +10,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.catalina.connector.Response;
 
+import dao.GenreDaoImpl;
+import dao.IGenreDao;
 import dao.ISerieDao;
 import dao.SerieDaoImpl;
+import metier.entities.Genre;
 import metier.entities.Serie;
 
 @WebServlet (name="cs",urlPatterns= {"/controleur","*.do"})
 public class ControleurServlet extends HttpServlet {
+	
 	ISerieDao metier;
+	IGenreDao metierG;
 	
 	@Override
 	public void init() throws ServletException {
 		metier = new SerieDaoImpl();
+		metierG = new GenreDaoImpl();
 	}
 
 	@Override
@@ -42,43 +48,55 @@ public class ControleurServlet extends HttpServlet {
 		}
 		else if (path.equals("/saisie.do") )
 		{
+			List<Genre> g = metierG.getAllGenres();
+			GenreModel model= new GenreModel();
+			model.setGenres(g);
+			request.setAttribute("GModel", model);
+
 			request.getRequestDispatcher("saisieSerie.jsp").forward(request,response);
-		}
+			}
 		else if (path.equals("/save.do") && request.getMethod().equals("POST"))
 		{
 			String nom=request.getParameter("nom");
+			long GenreId=Long.parseLong(request.getParameter("genre"));
 			double nbS = Double.parseDouble(request.getParameter("nbS"));
-			Serie s = metier.save(new Serie(nom,nbS));
+			Genre g = metierG.getGenre(GenreId);
+			Serie s = metier.save(new Serie(nom,nbS,g));
 			request.setAttribute("serie", s);
-			request.getRequestDispatcher("confirmation.jsp").forward(request,response);
-		}
+			response.sendRedirect("chercher.do?motCle="); }
 		else if (path.equals("/supprimer.do"))
 		{
 			Long id= Long.parseLong(request.getParameter("id"));
 			metier.deleteSerie(id);
 			response.sendRedirect("chercher.do?motCle=");
 		}
-		else if (path.equals("/editer.do") )
-		{
-			Long id= Long.parseLong(request.getParameter("id"));
-			Serie s = metier.getSerie(id);
-			request.setAttribute("serie", s);
-			request.getRequestDispatcher("editerSerie.jsp").forward(request,response);
+		else if (path.equals("/editer.do")) {
+		    Long id = Long.parseLong(request.getParameter("id"));
+		    Serie s = metier.getSerie(id);
+		    request.setAttribute("serie", s);
+		    
+		    List<Genre> g = metierG.getAllGenres();
+		    GenreModel model = new GenreModel();
+		    model.setGenres(g);
+		    request.setAttribute("GModel", model); 
+		    request.getRequestDispatcher("editerSerie.jsp").forward(request, response);
 		}
+
 		else if (path.equals("/update.do") )
 		{
-			Long id = Long.parseLong(request.getParameter("id"));
+			long id = Long.parseLong(request.getParameter("id"));
 			String nom=request.getParameter("nom");
 			double nbS = Double.parseDouble(request.getParameter("nbS"));
+			Long categorieId=Long.parseLong(request.getParameter("genre"));
 			Serie s = new Serie();
 			s.setIdS(id);
 			s.setNomS(nom);
 			s.setNbS(nbS);
+			Genre cat = metierG.getGenre(categorieId);
+			s.setGenre(cat);
 			metier.updateSerie(s);
-			request.setAttribute("serie", s);
-			request.getRequestDispatcher("confirmatione.jsp").forward(request,response);
+			response.sendRedirect("chercher.do?motCle=");
 		}
-
 		else
 		{
 			response.sendError(Response.SC_NOT_FOUND);

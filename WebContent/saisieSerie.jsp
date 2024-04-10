@@ -27,7 +27,15 @@
  <label class="control-label">Nombre de saison :</label>
  <input type="text" name="nbS" class="form-control"/>
  </div>
+ <div class="form-group">
+<select name="genre" class="form-control">
+<c:forEach items="${GModel.genres}" var="g">
+<option value="${g.idG}">${g.nomG}</option>
+</c:forEach>
+</select>
+</div>
  <div>
+ 
  <button type="submit" class="btn btn-primary">Ajouter</button>
  </div>
  </form>

@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -23,15 +24,19 @@ public class Serie implements Serializable{
 	@Column (name="NB_S")
 	private double NbS;
 	
+	@ManyToOne
+	private Genre genre;
+	
 	public Serie() {
 	super();
 	}
 
-	public Serie(String nomS, double nbS) {
+	public Serie(String nomS, double nbS, Genre g) {
 		super();
 		this.nomS = nomS;
-		NbS = nbS;
-	}
+		this.NbS = nbS;
+		this.setGenre(g);
+		}
 	
 	public Serie(String nomS) {
 		super();
@@ -66,5 +71,12 @@ public class Serie implements Serializable{
 	public String toString() {
 		return "Serie [idS=" + idS + ", nomS=" + nomS + ", NbS=" + NbS + "]";
 	}	
+	
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+	public Genre getGenre() {
+		return genre;
+	}
 	
 }

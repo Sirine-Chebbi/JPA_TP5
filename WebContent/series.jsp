@@ -28,6 +28,7 @@
  		<th>ID</th>
  		<th>Nom Serie</th>
  		<th>Nombre de saison</th>
+ 		 <th>Genre</th>
  		 <th>Suppression</th>
   		<th>Edition</th>
  		
@@ -37,6 +38,7 @@
  		<td>${s.idS }</td>
  		<td>${s.nomS }</td>
  		<td>${s.nbS }</td>
+ 		<td>${s.genre.nomG }</td>
  		<td><a onclick="return confirm('Etes-vous sûr ?')" href="supprimer.do?id=${s.idS }">Supprimer</a></td>
  		<td><a href="editer.do?id=${s.idS }">Edit</a></td>
  	</tr>
